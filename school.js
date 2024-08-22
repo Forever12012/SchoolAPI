@@ -1,6 +1,8 @@
 const express = require("express");
-const router = express.Router();
+const app = express();
 const connection = require("./db");
+
+app.use(express.json());
 
 const validateSchoolData = (name, address, latitude, longitude) => {
   if (!name || typeof name != "string" || name.trim() === "") return false;
@@ -11,7 +13,7 @@ const validateSchoolData = (name, address, latitude, longitude) => {
   return true; // Return true if all validations pass
 };
 
-router.post("/addSchool", (req, res) => {
+app.post("/addSchool", (req, res) => {
   const { name, address, longitude, latitude } = req.body;
 
   if (!validateSchoolData(name, address, longitude, latitude)) {
@@ -37,7 +39,7 @@ router.post("/addSchool", (req, res) => {
 });
 
 // List Schools API
-router.get("/listSchools", (req, res) => {
+app.get("/listSchools", (req, res) => {
   const { latitude, longitude } = req.query;
 
   // Validate latitude and longitude
@@ -71,4 +73,7 @@ router.get("/listSchools", (req, res) => {
   });
 });
 
-module.exports = router;
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
